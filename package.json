@@ -1,0 +1,31 @@
+{
+  "name": "tylerrsbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yat-o/BotForCata.git"
+  },
+  "keywords": [
+    "tylerr",
+    "djs",
+    "discord",
+    "js"
+  ],
+  "author": "tylerr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yat-o/BotForCata/issues"
+  },
+  "homepage": "https://github.com/Yat-o/BotForCata#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.15.0"
+  }
+}
