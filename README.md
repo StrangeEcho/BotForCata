@@ -1,2 +1,1 @@
-# BotForCata
-DiscordBot in D.JS
+# WORK IN PROGRESS. STARTING FROM NOTHING
