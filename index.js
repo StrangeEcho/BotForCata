@@ -20,6 +20,7 @@ commandFiles.forEach(file => {
 	const exported = require(`./modules/${file}`);
 
 	Object.entries(exported).forEach(cmd => {
+		cmd[1].name = cmd[0];
 		client.commands.set(cmd[0], cmd[1]);
 	});
 });
@@ -59,7 +60,7 @@ client.on("message", message => {
 		let reply = "You didn't provide any arguments.";
 
 		if (command.usage) {
-			reply += `\nThe proper usage would be: \`${prefix}${commandName} ${command.usage}\``;
+			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
 		}
 
 		return message.channel.send(reply);
