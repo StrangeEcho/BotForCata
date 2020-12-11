@@ -1,6 +1,8 @@
 const { MessageEmbed } = require("discord.js");
 const { ownerID, prefix } = require("../config");
 const { clean } = require("../util");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.ping = {
 	description: "Pong",
@@ -48,6 +50,11 @@ module.exports.help = {
 	aliases: ["h"],
 	async execute(message, args) {
 
+		if (!args.length) {
+			return;
+			// TODO: return generic help embed
+		}
+
 		const commands = message.client.commands;
 		const name = args[0].toLowerCase();
 		const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
@@ -69,5 +76,36 @@ module.exports.help = {
 			description: data.join("\n"),
 			color: message.member.displayColor,
 		}));
+	},
+};
+
+module.exports.prefix = {
+	ownerOnly: true,
+	async execute(message, args) {
+		const GuildConfig = require("../db/GuildConfig.json");
+		if (!args.length) {
+			return message.channel.send(new MessageEmbed({
+				title: "Current prefix",
+				description: GuildConfig[message.guild.id].prefix ?? prefix,
+				color: message.member.displayColor,
+			}));
+		}
+		console.log(GuildConfig);
+		const Guild = GuildConfig[message.guild.id];
+		if (!Guild) {
+			const input = {
+				prefix: args[0],
+			};
+			GuildConfig[message.guild.id] = input;
+		}
+		fs.writeFile(path.join(__dirname, "..", "db", "GuildConfig.json"), JSON.stringify(GuildConfig, null, 4), "utf8", async (err) => {
+			if (err) {
+				return console.log(err);
+			}
+			return message.channel.send(new MessageEmbed({
+				title: "Prefix changed",
+				color: message.member.displayColor,
+			}));
+		});
 	},
 };
