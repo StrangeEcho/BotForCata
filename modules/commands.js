@@ -86,11 +86,10 @@ module.exports.prefix = {
 		if (!args.length) {
 			return message.channel.send(new MessageEmbed({
 				title: "Current prefix",
-				description: GuildConfig[message.guild.id].prefix ?? prefix,
+				description: GuildConfig[message.guild.id]?.prefix ?? prefix,
 				color: message.member.displayColor,
 			}));
 		}
-		console.log(GuildConfig);
 		const Guild = GuildConfig[message.guild.id];
 		if (!Guild) {
 			const input = {

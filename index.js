@@ -9,7 +9,7 @@ try {
 }
 catch {
 	const input = {
-		data: "This file is empty",
+		data: "This is the beginning of your file.",
 	};
 	fs.writeFileSync(filepath, JSON.stringify(input, null, 4), "utf8", (err) => {
 		if (err) {
