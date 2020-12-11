@@ -12,8 +12,10 @@ catch {
 		data: "This file is empty",
 	};
 	fs.writeFileSync(filepath, JSON.stringify(input, null, 4), "utf8", (err) => {
-		if (err) console.log(err);
-		console.log("DB created.");
+		if (err) {
+			return console.log(err);
+		}
+		return console.log("DB created.");
 	});
 }
 
