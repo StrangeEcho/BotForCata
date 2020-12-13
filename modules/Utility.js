@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { prefix } = require("../config");
+const PrefixSupplier = require("../PrefixSupplier");
 
 module.exports.ping = {
 	description: "Pong",
@@ -33,8 +34,16 @@ module.exports.help = {
 	async execute(message, args) {
 
 		if (!args.length) {
-			return;
-			// TODO: return generic help embed
+			const currentPrefix = PrefixSupplier(message);
+			return message.channel.send(new MessageEmbed({
+				title: `${message.client.user.tag} help page`,
+				color: message.member.displayColor,
+				fields: [
+					{ name: "Commands", value: `\`${currentPrefix}commands\` returns a list of all my commands.` },
+					{ name: "Help", value: `\`${currentPrefix}help [command]\` returns information of the specified command.
+					Example: \`${currentPrefix}help ping\`` },
+				],
+			}));
 		}
 
 		const commands = message.client.commands;
