@@ -4,15 +4,15 @@ const PrefixSupplier = require("./PrefixSupplier");
 module.exports = async message => {
 
 	const prefix = PrefixSupplier(message);
-	const client = message.client;
+	const handler = message.client.Handler;
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-	const command = client.commands.get(commandName)
-		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+	const command = handler.commands.get(commandName)
+		|| handler.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 	if (!command) return;
 

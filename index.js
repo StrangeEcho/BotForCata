@@ -35,16 +35,19 @@ const client = new Client({
 	presence: { activity: { name: "Tylerr, write something here...", type: "COMPETING" }, status: "online" },
 });
 
-client.commands = new Collection();
+client.Handler = {};
+client.Handler.commands = new Collection();
+client.Handler.categories = new Collection();
 
 const commandFiles = fs.readdirSync("./modules").filter(file => file.endsWith(".js"));
 
 commandFiles.forEach(file => {
 	const exported = require(`./modules/${file}`);
+	client.Handler.categories.set(file.slice(0, file.indexOf(".")), exported);
 
 	Object.entries(exported).forEach(cmd => {
 		cmd[1].name = cmd[0];
-		client.commands.set(cmd[0], cmd[1]);
+		client.Handler.commands.set(cmd[0], cmd[1]);
 	});
 });
 
