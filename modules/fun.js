@@ -1,23 +1,22 @@
-const Discord = require('discord.js');
+const Discord = require("discord.js");
 
-modules.export.run = async (bot, message, args) => {    
+module.exports.eightball = {
+	aliases: ["8ball"],
+	args: true,
+	async execute(message, args) {
 
-    if(!args[2]) return message.reply("Ask a full question.");
-    let replies = ["Yes", "No", "I dont know", "Ask again later"];
+		if (!args[1]) return message.reply("Ask a full question.");
 
-    let result = Math.floor((Math.random() * replies.length));
-    let question = args.slice(1).join(" ");
+		const replies = ["Yes", "No", "I dont know", "Ask again later"];
 
-    let ballembed = new Discord.RichEmbed()
-    .setAuthor(message.author.tag)
-    .setColor("#FF9900")
-    .addField("Question", question)
-    .addField("Answer" replies[result]);
+		const result = replies[Math.floor((Math.random() * replies.length))];
+		const question = args.join(" ");
 
-    message.send(ballembed);
-
-}
-
-modules.export.help = {
-    name: "8ball"
-}
+		return message.channel.send(new Discord.MessageEmbed()
+			.setAuthor(message.author.tag)
+			.setColor("#FF9900")
+			.addField("Question", question)
+			.addField("Answer", result),
+		);
+	},
+};
