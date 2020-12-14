@@ -4,7 +4,7 @@ const { MessageEmbed } = require("discord.js");
 const { prefix } = require("../config");
 
 module.exports.say = {
-	description: "Repeats Stuff Ig",
+	description: "Repeats message.",
 	args: true,
 	ownerOnly: true,
 	execute(message, args) {
