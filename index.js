@@ -65,4 +65,12 @@ client.on("message", async message => {
 
 });
 
+client.on("MissingPermissions", async message => {
+	message.channel.send("You do not have the required permissions.");
+});
+
+client.on("ClientMissingPermissions", async message => {
+	message.channel.send("Sorry, I do not have the required permissions.");
+});
+
 client.login(token);

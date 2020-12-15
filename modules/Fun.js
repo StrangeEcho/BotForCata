@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
-const func = (member) => [`Yes, ${member} is quite smart.`, `No, ${member} is super duper dumb.`];
 const { getUserFromMention } = require("../util");
+const func = (member) => [`Yes, ${member} is quite smart.`, `No, ${member} is super duper dumb.`];
+
 module.exports.eightball = {
 	aliases: ["8ball"],
 	args: true,

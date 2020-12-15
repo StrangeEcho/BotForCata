@@ -1,7 +1,8 @@
+const { Message } = require("discord.js");
 const { ownerID } = require("./config");
 const PrefixSupplier = require("./PrefixSupplier");
 
-module.exports = async message => {
+module.exports = async function(message = Message) {
 
 	const prefix = PrefixSupplier(message);
 	const handler = message.client.Handler;
@@ -24,6 +25,18 @@ module.exports = async message => {
 	// check if guildOnly: true on a command
 	if (command.guildOnly && message.channel.type === "dm") {
 		return message.reply("I can't execute that command inside DMs!");
+	}
+
+	if (!message.member.permissions.has(command?.userPermissions)) {
+		return message.client.emit("MissingPermissions", message);
+	}
+
+	if (!message.guild.me.permissions.has(command?.clientPermissions)) {
+		return message.client.emit("ClientMissingPermissions", message);
+	}
+
+	if (command.nsfw && !message.channel.nsfw) {
+		return message.reply("I can't execute that command outside of a NSFW channel!");
 	}
 
 	// check if args: true

@@ -1,8 +1,9 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { prefix } = require("../config");
 const PrefixSupplier = require("../PrefixSupplier");
 
 module.exports.ping = {
+	clientPermissions: [Permissions.FLAGS.SEND_MESSAGES],
 	description: "Pong",
 	async execute(message) {
 		const first = await message.channel.send("PINGIIIIIIIIIIIIIIIIIIIIIIIIIIIING");
