@@ -1,24 +1,27 @@
 const { MessageEmbed, Permissions } = require("discord.js");
+const Command = require("../Command");
 const { prefix } = require("../config");
 const PrefixSupplier = require("../PrefixSupplier");
+const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
 
-module.exports.ping = {
+module.exports.ping = new Command({
+	aliases: ["p"],
+	description: "Shows bot latency",
 	clientPermissions: [Permissions.FLAGS.SEND_MESSAGES],
-	description: "Pong",
+	prefix: ",,",
 	async execute(message) {
 		const first = await message.channel.send("PINGIIIIIIIIIIIIIIIIIIIIIIIIIIIING");
 		return first.edit(`Ping took: ${Date.now() - first.createdTimestamp}ms`);
 	},
-};
+});
 
-
-module.exports.commands = {
+module.exports.commands = new Command({
 	aliases: ["cmds"],
 	async execute(message) {
 
-		const handler = message.client.Handler;
+		const { categories } = message.client.commandHandler;
 
-		const mapped = handler.categories.map((exported, category) => {
+		const mapped = categories.map((exported, category) => {
 			const cmds = Object.entries(exported).map((cmd) => cmd[0] + (cmd[1]?.aliases ? ", " + cmd[1]?.aliases?.join(", ") : ""));
 			return `**${category}**\n\`${cmds.join("` `")}\``;
 		});
@@ -28,9 +31,9 @@ module.exports.commands = {
 			color: message.member.displayColor,
 		}));
 	},
-};
+});
 
-module.exports.help = {
+module.exports.help = new Command({
 	aliases: ["h"],
 	async execute(message, args) {
 
@@ -47,7 +50,7 @@ module.exports.help = {
 			}));
 		}
 
-		const commands = message.client.commands;
+		const { commands } = message.client.commandHandler;
 		const name = args[0].toLowerCase();
 		const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
@@ -69,9 +72,60 @@ module.exports.help = {
 			color: message.member.displayColor,
 		}));
 	},
-};
+});
 
-// Template
+module.exports.showemoji = new Command({
+	aliases: ["emoji", "se"],
+	args: true,
+	clientPermissions: [Permissions.FLAGS.SEND_MESSAGES],
+	description: "Shows information and image link for an emoji.",
+	ownerOnly: false,
+	usage: "<emoji>",
+	userPermissions: [Permissions.FLAGS.SEND_MESSAGES],
+	async execute(message, args) {
+
+		let emoji = undefined;
+		const match = args[0].match(emoteRegex)[0];
+
+		if (!match) {
+			return message.channel.send("Please provide an emoji/emote.");
+		}
+
+		else if (match.startsWith("<") && match.endsWith(">")) {
+
+			const emoteID = match.match(/\d+/g);
+
+			emoji = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${match.indexOf("a") === 1 ? "gif" : "png"}`;
+
+			const name = match.slice(2, match.lastIndexOf(":")).replace(":", "");
+
+			return message.channel.send(new MessageEmbed({
+				description: `**Name:** ${name}
+				**Link:** ${emoji}`,
+				image: { url: emoji },
+				color: message.member.displayColor,
+			}));
+		}
+	},
+});
+
+// New Template
+// module.exports.pp = new Command({
+// 	aliases: ["alias1", "alias2"],
+// 	args: false,
+// 	clientPermissions: [Permissions.FLAGS.SEND_MESSAGES],
+// 	description: "pp command",
+// 	ownerOnly: false,
+// 	usage: "<arg here if args>",
+// 	userPermissions: [Permissions.FLAGS.SEND_MESSAGES],
+// 	async execute(message) {
+// 		const first = await message.channel.send("PINGIIIIIIIIIIIIIIIIIIIIIIIIIIIING");
+// 		return first.edit(`Ping took: ${Date.now() - first.createdTimestamp}ms`);
+// 	},
+// });
+
+
+// Old Template
 // module.exports.new = {
 //  ownerOnly: false,
 //  description: "",

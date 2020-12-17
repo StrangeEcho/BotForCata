@@ -20,49 +20,36 @@ catch {
 }
 
 // ///////////////////////////////////////////////////////////////////////////////
-
-const responseObject = {
-	">pong": "PANG!",
-	">bing": "Google!",
-};
-
-const { Client, Collection } = require("discord.js");
+const { Client } = require("discord.js");
 const { token } = require("./config");
 const CommandHandler = require("./CommandHandler");
+const PrefixSupplier = require("./PrefixSupplier");
 
-const client = new Client({
-	disableMentions: "everyone",
-	presence: { activity: { name: "Tylerr, write something here...", type: "COMPETING" }, status: "online" },
-});
+class BotClient {
+	constructor() {
 
-client.Handler = {};
-client.Handler.commands = new Collection();
-client.Handler.categories = new Collection();
+		this.Client = new Client({
+			disableMentions: "everyone",
+			presence: { activity: { name: "Tylerr, write something here...", type: "COMPETING" }, status: "online" },
+		});
 
-const commandFiles = fs.readdirSync("./modules").filter(file => file.endsWith(".js"));
 
-commandFiles.forEach(file => {
-	const exported = require(`./modules/${file}`);
-	client.Handler.categories.set(file.slice(0, file.indexOf(".")), exported);
+		this.commandHandler = new CommandHandler(this.Client, {
+			handleEdits: true,
+			prefix: (message) => PrefixSupplier(message),
+		});
 
-	Object.entries(exported).forEach(cmd => {
-		cmd[1].name = cmd[0];
-		client.Handler.commands.set(cmd[0], cmd[1]);
-	});
-});
+		this.Client.commandHandler = this.commandHandler;
+
+		this.commandHandler.register();
+	}
+}
+
+const clientHandler = new BotClient();
+const client = clientHandler.Client;
 
 client.on("ready", () => {
 	console.info(`Ready and logged in as ${client.user.tag}!`);
-});
-
-client.on("message", async message => {
-
-	if (responseObject[message.content]) {
-		message.channel.send(responseObject[message.content]);
-	}
-
-	CommandHandler(message);
-
 });
 
 client.on("MissingPermissions", async message => {
@@ -74,3 +61,5 @@ client.on("ClientMissingPermissions", async message => {
 });
 
 client.login(token);
+
+module.exports.clientHandler = clientHandler;

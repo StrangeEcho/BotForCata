@@ -1,8 +1,9 @@
 const Discord = require("discord.js");
+const Command = require("../Command");
 const { getUserFromMention } = require("../util");
 const func = (member) => [`Yes, ${member} is quite smart.`, `No, ${member} is super duper dumb.`];
 
-module.exports.eightball = {
+module.exports.eightball = new Command({
 	aliases: ["8ball"],
 	args: true,
 	description: "Ask the 8ball a yes/no question.",
@@ -24,9 +25,9 @@ module.exports.eightball = {
 			.addField("Answer", result),
 		);
 	},
-};
+});
 
-module.exports.smart = {
+module.exports.smart = new Command({
 	description: "Mention someone to check if they are smart.",
 	example: ["@Drev"],
 	usage: "<mention>",
@@ -42,4 +43,4 @@ module.exports.smart = {
 		}
 		return message.reply("Please mention someone.");
 	},
-};
+});
