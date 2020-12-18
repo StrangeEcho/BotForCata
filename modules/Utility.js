@@ -76,6 +76,7 @@ module.exports.help = new Command({
 
 module.exports.showemoji = new Command({
 	aliases: ["emoji", "se"],
+	prefix: "//",
 	args: true,
 	clientPermissions: [Permissions.FLAGS.SEND_MESSAGES],
 	description: "Shows information and image link for an emoji.",

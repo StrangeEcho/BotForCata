@@ -29,11 +29,16 @@ module.exports = class CommandHandler {
 		this.client.once("ready", () => {
 			console.log("Commandhandler | Loaded");
 
-			const CommandPrefixes = this.commands.map((c, k) => c.prefix).filter((cmd) => cmd && cmd[0] !== null);
+			const CommandsWithPrefixes = this.commands.filter((v, k) => v.prefix[0] !== null);
+
+			const Dictionary = {};
+			CommandsWithPrefixes.forEach((v, k) => v.aliases.map((a) => Dictionary[`${v.prefix}${a}`] = v));
+
+			this.client.dictionary = Dictionary;
 
 			this.client.on("message", async (message) => {
 				if (message.partial) await message.fetch();
-				this.handle(message, CommandPrefixes);
+				this.handle(message, CommandsWithPrefixes);
 			});
 
 			if (this.handleEdits) {
@@ -41,49 +46,31 @@ module.exports = class CommandHandler {
 					if (oldMessage.partial) await oldMessage.fetch();
 					if (newMessage.partial) await newMessage.fetch();
 					if (oldMessage.content === newMessage.content) return;
-					if (this.handleEdits) this.handle(newMessage, CommandPrefixes);
+					if (this.handleEdits) this.handle(newMessage);
 				});
 			}
 		});
 	}
 
 
-	handle(message, CommandPrefixes) {
+	handle(message) {
 
 		const prefix = PrefixSupplier(message);
 		const commands = this.commands;
-		const GuildPrefixes = CommandPrefixes.concat([prefix]);
 
-		console.log(GuildPrefixes);
+		let commandName;
+		const dictMatch = message.client.dictionary[message.content.trim().split(/ +/)[0]];
+		if (dictMatch) {
+			commandName = dictMatch.name;
+		}
 
-		let args = undefined;
-		let command = undefined;
-		for (let index = 0; index < GuildPrefixes.length; index++) {
-			const p = GuildPrefixes[index];
+		const args = message.content.slice(prefix.length).trim().split(/ +/);
+		commandName = args.shift().toLowerCase();
 
-			args = message.content.slice(p.length).trim().split(/ +/);
-			const commandName = args.shift().toLowerCase();
-
-			if (command) break;
-
-			command = commands.get(commandName)
+		const command = commands.get(commandName)
 			|| commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-		}
 
-		console.log(command);
 		if (!command) return;
-
-		const commandPrefix = command?.prefix;
-
-		console.log(commandPrefix);
-
-		const prefixes = Array.isArray(commandPrefix) ? commandPrefix.concat([prefix]) : [commandPrefix, prefix];
-
-		if (!prefixes.find((p) => {
-			return message.content.startsWith(p);
-		})) {
-			return;
-		}
 
 		// if (!message.content.startsWith(prefix)
 		// 	&& !message.content.startsWith(commandPrefix)

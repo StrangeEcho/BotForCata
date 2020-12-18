@@ -33,7 +33,6 @@ class BotClient {
 			presence: { activity: { name: "Tylerr, write something here...", type: "COMPETING" }, status: "online" },
 		});
 
-
 		this.commandHandler = new CommandHandler(this.Client, {
 			handleEdits: true,
 			prefix: (message) => PrefixSupplier(message),
