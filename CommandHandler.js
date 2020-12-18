@@ -55,16 +55,18 @@ module.exports = class CommandHandler {
 
 	handle(message) {
 
-		const prefix = PrefixSupplier(message);
+		let prefix = PrefixSupplier(message);
 		const commands = this.commands;
 
 		let commandName;
 		const dictMatch = message.client.dictionary[message.content.trim().split(/ +/)[0]];
 		if (dictMatch) {
 			commandName = dictMatch.name;
+			prefix = dictMatch.prefix[0];
 		}
 
 		const args = message.content.slice(prefix.length).trim().split(/ +/);
+
 		commandName = args.shift().toLowerCase();
 
 		const command = commands.get(commandName)
