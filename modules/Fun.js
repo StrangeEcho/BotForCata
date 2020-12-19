@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const Command = require("../Command");
 const { getUserFromMention } = require("../util");
+const fetch = require("node-fetch");
 const func = (member) => [`Yes, ${member} is quite smart.`, `No, ${member} is super duper dumb.`];
 
 module.exports.eightball = new Command({
@@ -44,3 +45,12 @@ module.exports.smart = new Command({
 		return message.reply("Please mention someone.");
 	},
 });
+
+module.exports.megumin = new Command({
+	execute(message) {
+		fetch("https://waifu.pics/api/sfw/megumin")
+			.then(result => result.json())
+			.then((data) => message.channel.send(data["url"] ?? "Nothing."));
+	},
+});
+
