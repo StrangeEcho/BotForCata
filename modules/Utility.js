@@ -20,11 +20,11 @@ module.exports.commands = new Command({
 	async execute(message) {
 
 		const { categories } = message.client.commandHandler;
-
 		const mapped = categories.map((exported, category) => {
 			const cmds = Object.entries(exported).map((cmd) => cmd[0] + (cmd[1]?.aliases ? ", " + cmd[1]?.aliases?.join(", ") : ""));
 			return `**${category}**\n\`${cmds.join("` `")}\``;
 		});
+
 		return message.channel.send(new MessageEmbed({
 			title: "Commands",
 			description: mapped.join("\n"),
@@ -36,9 +36,10 @@ module.exports.commands = new Command({
 module.exports.help = new Command({
 	aliases: ["h"],
 	async execute(message, args) {
-
 		if (!args.length) {
+
 			const currentPrefix = PrefixSupplier(message);
+
 			return message.channel.send(new MessageEmbed({
 				title: `${message.client.user.tag} help page`,
 				color: message.member.displayColor,
