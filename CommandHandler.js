@@ -52,11 +52,12 @@ module.exports = class CommandHandler {
 		});
 	}
 
-
 	handle(message) {
 
 		let prefix = PrefixSupplier(message);
 		const commands = this.commands;
+
+		if (message.author.bot || message.webhookID) return;
 
 		let commandName;
 		const dictMatch = message.client.dictionary[message.content.trim().split(/ +/)[0]];
@@ -79,10 +80,9 @@ module.exports = class CommandHandler {
 		// 	|| message.author.bot) return;
 
 		// check if ownerOnly: true on a command
-		{
-			if (command.ownerOnly && !config.ownerID.includes(message.member.id)) {
-				return;
-			}
+
+		if (command.ownerOnly && !config.ownerID.includes(message.member.id)) {
+			return;
 		}
 
 		// check if guildOnly: true on a command
@@ -90,13 +90,11 @@ module.exports = class CommandHandler {
 			return message.reply("I can't execute that command inside DMs!");
 		}
 
-		// TODO: permissions check method.
-
-		// if (!message.member.permissions.has(command?.userPermissions)) {
+		// // TODO: permissions check method.
+		// if (command.userPermissions && !this.checkPermissions(command.userPermissions, message.member)) {
 		// 	return message.client.emit("MissingPermissions", message);
 		// }
-
-		// if (!message.guild.me.permissions.has(command?.clientPermissions)) {
+		// if (command.clientPermission && !this.checkPermissions(command.clientPermissions, message.guild.me)) {
 		// 	return message.client.emit("ClientMissingPermissions", message);
 		// }
 
@@ -121,8 +119,9 @@ module.exports = class CommandHandler {
 				message.channel.startTyping();
 			}
 
-			// TODO: execute class
 			command.execute(message, args);
+			this.client.emit("CommandFinished", command, args, message.author);
+
 		}
 		catch (error) {
 			console.error(error);
@@ -149,12 +148,23 @@ module.exports = class CommandHandler {
 					throw new Error("Command object is missing from exported module.");
 				}
 				const cmdName = cmd[0];
+				cmd[1].client = this.client;
 				cmd[1].name = cmdName;
 				!cmd[1].aliases.length > 0 ? cmd[1].aliases = [cmdName] : cmd[1].aliases.push(cmdName);
 
-				console.log(cmd);
 				this.commands.set(cmdName, cmd[1]);
 			});
+		});
+	}
+
+	checkPermissions(perms = [], member) {
+		return perms.every((perm) => {
+			if (member.permissions.has(perm, true)) {
+				return true;
+			}
+			else {
+				return false && this.client.emit("");
+			}
 		});
 	}
 };

@@ -125,7 +125,6 @@ module.exports.showemoji = new Command({
 // 	},
 // });
 
-
 // Old Template
 // module.exports.new = {
 //  ownerOnly: false,

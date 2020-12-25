@@ -1,38 +1,76 @@
+// eslint-disable-next-line no-unused-vars
+const { Client, BitField, PermissionString } = require("discord.js");
+
 module.exports = class Command {
 	constructor({
 		aliases = new Array(0),
-		description = "Empty description",
-		clientPermissions = null,
-		userPermissions = null,
-		typing = false,
-		execute,
-		ownerOnly = false,
 		args = false,
-		usage = "Empty usage",
+		client,
+		clientPermissions = null,
+		description = "Empty description",
+		execute,
+		guildOnly = false,
+		ownerOnly = false,
 		prefix = null,
+		typing = false,
+		usage = null,
+		userPermissions = null,
 	}) {
 		if (typeof execute !== "function") {
-			throw new Error("Command doesnt have execute function!", this);
+			this.throw("Command doesnt have execute function!", this);
 		}
 
-		this.execute = execute;
-
+		/**
+		 * @type {Array}
+		 */
 		this.aliases = Array.isArray(aliases) ? aliases : new Array(aliases);
-
-		this.description = description;
-
-		this.usage = usage;
-
-		this.typing = Boolean(typing);
-
-		this.clientPermissions = clientPermissions;
-
-		this.userPermissions = userPermissions;
-
-		this.ownerOnly = Boolean(ownerOnly);
-
+		/**
+		 * @type {boolean}
+		 */
 		this.args = Boolean(args);
-
+		/**
+		 * @type {Client}
+		 */
+		this.client = client;
+		/**
+		 * @type {BitField<PermissionString>}
+		 */
+		this.clientPermissions = clientPermissions && Array.isArray(clientPermissions) ? clientPermissions : new Array(clientPermissions);
+		/**
+		 * @type {string}
+		 */
+		this.description = description;
+		/**
+		 * @type {Function}
+		 */
+		this.execute = execute;
+		/**
+		 * @type {boolean}
+		 */
+		this.guildOnly = Boolean(guildOnly);
+		/**
+		 * @type {boolean}
+		 */
+		this.ownerOnly = Boolean(ownerOnly);
+		/**
+		 * @type {Array}
+		 */
 		this.prefix = Array.isArray(prefix) ? prefix : new Array(prefix);
+		/**
+		 * @type {boolean}
+		 */
+		this.typing = Boolean(typing);
+		/**
+		 * @type {string[]}
+		 */
+		this.usage = usage && Array.isArray(usage) ? usage : new Array(usage);
+		/**
+		 * @type {BitField<PermissionString>}
+		 */
+		this.userPermissions = userPermissions && Array.isArray(userPermissions) ? userPermissions : new Array(userPermissions);
+	}
+
+	static throw(...message) {
+		throw new Error(...message);
 	}
 };

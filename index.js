@@ -1,9 +1,12 @@
-// ///////////////////////////////////////////////////////////////////////////////
-// Create DB JSON if it does not exist.
 const fs = require("fs");
 const path = require("path");
 const filepath = path.join(__dirname, "db", "GuildConfig.json");
+const { token } = require("./config");
+const B4C_Client = require("./Client");
+const Listener = require("./CommandListener");
 
+// ///////////////////////////////////////////////////////////////////////////////
+// Create DB JSON if it does not exist.
 try {
 	new fs.readFileSync(filepath, "utf8");
 }
@@ -18,47 +21,12 @@ catch {
 		return console.log("DB created.");
 	});
 }
-
 // ///////////////////////////////////////////////////////////////////////////////
-const { Client } = require("discord.js");
-const { token } = require("./config");
-const CommandHandler = require("./CommandHandler");
-const PrefixSupplier = require("./PrefixSupplier");
 
-class BotClient {
-	constructor() {
-
-		this.Client = new Client({
-			disableMentions: "everyone",
-			presence: { activity: { name: "Tylerr, write something here...", type: "COMPETING" }, status: "online" },
-		});
-
-		this.commandHandler = new CommandHandler(this.Client, {
-			handleEdits: true,
-			prefix: (message) => PrefixSupplier(message),
-		});
-
-		this.Client.commandHandler = this.commandHandler;
-
-		this.commandHandler.register();
-	}
-}
-
-const clientHandler = new BotClient();
+const clientHandler = new B4C_Client();
 const client = clientHandler.Client;
+const listener = new Listener(client);
 
-client.on("ready", () => {
-	console.info(`Ready and logged in as ${client.user.tag}!`);
-});
-
-client.on("MissingPermissions", async message => {
-	message.channel.send("You do not have the required permissions.");
-});
-
-client.on("ClientMissingPermissions", async message => {
-	message.channel.send("Sorry, I do not have the required permissions.");
-});
+listener.start();
 
 client.login(token);
-
-module.exports.clientHandler = clientHandler;
