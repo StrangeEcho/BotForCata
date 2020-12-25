@@ -1,9 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const { MessageEmbed } = require("discord.js");
-const { prefix } = require("../config");
+const config = require("../config");
+const Command = require("../Command");
 
-module.exports.say = {
+module.exports.say = new Command({
 	description: "Repeats message.",
 	args: true,
 	ownerOnly: true,
@@ -12,16 +13,17 @@ module.exports.say = {
 		message.delete().catch(err => console.log(err));
 		message.channel.send(sayMessage);
 	},
-};
+});
 
-module.exports.prefix = {
+module.exports.prefix = new Command({
+	prefix: config.prefix,
 	ownerOnly: true,
 	async execute(message, args) {
 		const GuildConfig = require("../db/GuildConfig.json");
 		if (!args.length) {
 			return message.channel.send(new MessageEmbed({
 				title: "Current prefix",
-				description: GuildConfig[message.guild.id]?.prefix ?? prefix,
+				description: GuildConfig[message.guild.id]?.prefix ?? config.prefix,
 				color: message.member.displayColor,
 			}));
 		}
@@ -42,4 +44,4 @@ module.exports.prefix = {
 			}));
 		});
 	},
-};
+});
