@@ -29,12 +29,10 @@ module.exports = class CommandHandler {
 		this.client.once("ready", () => {
 			console.log("Commandhandler | Loaded");
 
-			const CommandsWithPrefixes = this.commands.filter((v, k) => v.prefix[0] !== null);
+			const CommandsWithPrefixes = this.commands.filter((v) => v.prefix[0] !== null);
 
-			const Dictionary = {};
-			CommandsWithPrefixes.forEach((v, k) => v.aliases.map((a) => Dictionary[`${v.prefix}${a}`] = v));
-
-			this.client.dictionary = Dictionary;
+			this.client.dictionary = {};
+			CommandsWithPrefixes.forEach((v) => v.aliases.map((a) => this.client.dictionary[`${v.prefix}${a}`] = v));
 
 			this.client.on("message", async (message) => {
 				if (message.partial) await message.fetch();
@@ -59,12 +57,15 @@ module.exports = class CommandHandler {
 
 		if (message.author.bot || message.webhookID) return;
 
+		// This checks wether the message matches a command using a static prefix
 		let commandName;
 		const dictMatch = message.client.dictionary[message.content.trim().split(/ +/)[0]];
 		if (dictMatch) {
 			commandName = dictMatch.name;
 			prefix = dictMatch.prefix[0];
 		}
+
+		if (!message.content.startsWith(prefix) && !dictMatch) return;
 
 		const args = message.content.slice(prefix.length).trim().split(/ +/);
 
@@ -75,17 +76,12 @@ module.exports = class CommandHandler {
 
 		if (!command) return;
 
-		// if (!message.content.startsWith(prefix)
-		// 	&& !message.content.startsWith(commandPrefix)
-		// 	|| message.author.bot) return;
-
-		// check if ownerOnly: true on a command
-
+		// check if ownerOnly: true on a command object
 		if (command.ownerOnly && !config.ownerID.includes(message.member.id)) {
 			return;
 		}
 
-		// check if guildOnly: true on a command
+		// check if guildOnly: true on a command object
 		if (command.guildOnly && message.channel.type === "dm") {
 			return message.reply("I can't execute that command inside DMs!");
 		}

@@ -13,7 +13,7 @@ module.exports = class Listener {
 
 		client.on("CommandFinished", async (cmd, args, author) => {
 			const date = new Date();
-			console.info(`CommandFinished | ${cmd.name} : "${args}"\nExecuted by ${author.tag} [${author.id}]\n${date.toLocaleString("en-GB")}`);
+			console.info(`CommandFinished | ${cmd.name} ${args.length ? `: "${args}"` : ""}\nExecuted by ${author.tag} [${author.id}]\n${date.toLocaleString("en-GB")}`);
 		});
 
 		client.on("MissingPermissions", async (cmd, args, author, message) => {
