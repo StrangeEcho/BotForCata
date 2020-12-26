@@ -43,3 +43,24 @@ module.exports.prefix = {
 		});
 	},
 };
+
+module.exports.kick = {
+	description: "Kicks a memner",
+    args: true,
+    usage: '<user> <reason>',
+    execute(message, args) {
+        const user = message.mentions.users.first();
+        if (user) {
+            const member = message.guild.member(user);
+            if (member) {
+                member
+                .kick 
+                .then(() => {            
+            message.reply(`Successfully kicked ${user.tag}`);
+          })
+            }
+
+            }
+        }
+	},
+};
