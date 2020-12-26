@@ -44,23 +44,30 @@ module.exports.prefix = new Command({
 			}));
 		});
 	},
-})
+});
 module.exports.kick = {
-	description: "Kicks a memner",
-    args: true,
-    usage: '<user> <reason>',
-    execute(message, args) {
-        const user = message.mentions.users.first();
-        if (user) {
-            const member = message.guild.member(user);
-            if (member) {
-                member
-                .kick 
-                .then(() => {            
-            message.reply(`Successfully kicked ${user.tag}`);
-          })
-            }
-
-            }
-        }
+	description: "Kicks a member.",
+	args: true,
+	usage: "<member> <reason>",
+	async execute(message, args) {
+		const user = message.mentions.users.first();
+		const reason = args[1] ?? "Kicked.";
+		if (user) {
+			const member = message.guild.member(user);
+			if (member) {
+				member
+					.kick(reason)
+					.then(async () => {
+						return message.reply(`Successfully kicked ${user.tag}.`);
+					})
+					.catch(async (err) => console.error(err));
+			}
+			else {
+				message.channel.send(`Can't find ${user.tag} in the guild.`);
+			}
+		}
+		else {
+			message.channel.send("Please mention the member you want to kick.");
+		}
 	},
+};
