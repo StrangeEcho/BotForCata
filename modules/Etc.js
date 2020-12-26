@@ -1,7 +1,8 @@
 const { clean } = require("../util");
 const { ownerID } = require("../config");
+const Command = require("../Command");
 
-module.exports.eval = {
+module.exports.eval = new Command({
 	description: "eval",
 	args: true,
 	usage: "<expression>",
@@ -22,4 +23,4 @@ module.exports.eval = {
 			message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
 		}
 	},
-};
+});
