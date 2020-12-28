@@ -3,7 +3,7 @@ const { Client, BitField, PermissionString } = require("discord.js");
 
 module.exports = class Command {
 	constructor({
-		aliases = new Array(0),
+		aliases = [],
 		args = false,
 		client,
 		clientPermissions = null,
@@ -23,7 +23,7 @@ module.exports = class Command {
 		/**
 		 * @type {Array}
 		 */
-		this.aliases = Array.isArray(aliases) ? aliases : new Array(aliases);
+		this.aliases = Array.isArray(aliases) ? aliases : [aliases];
 		/**
 		 * @type {boolean}
 		 */
@@ -35,7 +35,7 @@ module.exports = class Command {
 		/**
 		 * @type {BitField<PermissionString>}
 		 */
-		this.clientPermissions = clientPermissions && Array.isArray(clientPermissions) ? clientPermissions : new Array(clientPermissions);
+		this.clientPermissions = clientPermissions !== null ? (Array.isArray(clientPermissions) ? clientPermissions : [clientPermissions]) : null;
 		/**
 		 * @type {string}
 		 */
@@ -55,7 +55,7 @@ module.exports = class Command {
 		/**
 		 * @type {Array}
 		 */
-		this.prefix = Array.isArray(prefix) ? prefix : new Array(prefix);
+		this.prefix = Array.isArray(prefix) ? prefix : [prefix];
 		/**
 		 * @type {boolean}
 		 */
@@ -67,7 +67,7 @@ module.exports = class Command {
 		/**
 		 * @type {BitField<PermissionString>}
 		 */
-		this.userPermissions = userPermissions && Array.isArray(userPermissions) ? userPermissions : new Array(userPermissions);
+		this.userPermissions = userPermissions !== null ? (Array.isArray(userPermissions) ? userPermissions : [userPermissions]) : null;
 	}
 
 	static throw(...message) {
