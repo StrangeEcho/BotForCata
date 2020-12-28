@@ -152,10 +152,6 @@ module.exports = class CommandHandler {
 				const cmdName = cmd[0];
 				const cmdObject = cmd[1];
 
-				if (typeof cmdObject !== "object") {
-					throw new Error(`Command object is missing from exported module. | ${cmdName} | ${file}`);
-				}
-
 				if (!(cmdObject instanceof Command)) {
 					throw new Error(`Command is not instance of a Command class. | ${cmdName} | ${file}`);
 				}
