@@ -20,3 +20,7 @@ module.exports.getUserFromMention = (mention, message) => {
 
 	return message.client.users.cache.get(id);
 };
+
+module.exports.parseUser = () => {
+	//
+};

@@ -5,7 +5,6 @@ const { token } = require("./config");
 const B4C_Client = require("./Client");
 const Listener = require("./CommandListener");
 
-// ///////////////////////////////////////////////////////////////////////////////
 // Create DB JSON if it does not exist.
 try {
 	new fs.readFileSync(filepath, "utf8");
@@ -21,7 +20,6 @@ catch {
 		return console.log("DB created.");
 	});
 }
-// ///////////////////////////////////////////////////////////////////////////////
 
 const clientHandler = new B4C_Client();
 const client = clientHandler.Client;
