@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const config = require("../config");
 const Command = require("../Command");
 
@@ -45,10 +45,13 @@ module.exports.prefix = new Command({
 		});
 	},
 });
-module.exports.kick = {
-	description: "Kicks a member.",
+
+module.exports.kick = new Command({
 	args: true,
+	clientPermissions: [Permissions.FLAGS.KICK_MEMBERS],
+	description: "Kicks a member.",
 	usage: "<member> <reason>",
+	userPermissions: [Permissions.FLAGS.KICK_MEMBERS],
 	async execute(message, args) {
 		const user = message.mentions.users.first();
 		const reason = args[1] ?? "Kicked.";
@@ -70,4 +73,4 @@ module.exports.kick = {
 			message.channel.send("Please mention the member you want to kick.");
 		}
 	},
-};
+});
