@@ -2,6 +2,7 @@ const { Collection } = require("discord.js");
 const config = require("./config");
 const PrefixSupplier = require("./PrefixSupplier");
 const fs = require("fs");
+const Command = require("./Command");
 
 module.exports = class CommandHandler {
 	constructor(client, {
@@ -87,12 +88,20 @@ module.exports = class CommandHandler {
 		}
 
 		// // TODO: permissions check method.
-		// if (command.userPermissions && !this.checkPermissions(command.userPermissions, message.member)) {
-		// 	return message.client.emit("MissingPermissions", message);
-		// }
-		// if (command.clientPermission && !this.checkPermissions(command.clientPermissions, message.guild.me)) {
-		// 	return message.client.emit("ClientMissingPermissions", message);
-		// }
+		if (command.userPermissions || command.clientPermissions) {
+
+			if (command.userPermissions) {
+				if (!(this.checkPermissions(command.userPermissions, message.member))) {
+					return message.client.emit("MissingPermissions", command, args, message.author, message);
+				}
+			}
+
+			if (command.clientPermissions) {
+				if (!(this.checkPermissions(command.clientPermissions, message.guild.me))) {
+					return message.client.emit("ClientMissingPermissions", command, args, message.author, message);
+				}
+			}
+		}
 
 		if (command.nsfw && !message.channel.nsfw) {
 			return message.reply("I can't execute that command outside of a NSFW channel!");
@@ -140,27 +149,32 @@ module.exports = class CommandHandler {
 
 			Object.entries(exported).forEach(cmd => {
 
-				if (typeof cmd[1] !== "object") {
-					throw new Error("Command object is missing from exported module.");
-				}
 				const cmdName = cmd[0];
-				cmd[1].client = this.client;
-				cmd[1].name = cmdName;
-				!cmd[1].aliases.length > 0 ? cmd[1].aliases = [cmdName] : cmd[1].aliases.push(cmdName);
+				const cmdObject = cmd[1];
 
-				this.commands.set(cmdName, cmd[1]);
+				if (typeof cmdObject !== "object") {
+					throw new Error(`Command object is missing from exported module. | ${cmdName} | ${file}`);
+				}
+
+				if (!(cmdObject instanceof Command)) {
+					throw new Error(`Command is not instance of a Command class. | ${cmdName} | ${file}`);
+				}
+
+				cmdObject.client = this.client;
+				cmdObject.name = cmdName;
+				!cmdObject.aliases.length > 0 ? cmdObject.aliases = [cmdName] : cmdObject.aliases.push(cmdName);
+
+				this.commands.set(cmdName, cmdObject);
 			});
 		});
 	}
 
-	checkPermissions(perms = [], member) {
+	checkPermissions(perms, member) {
 		return perms.every((perm) => {
 			if (member.permissions.has(perm, true)) {
 				return true;
 			}
-			else {
-				return false && this.client.emit("");
-			}
+			return false;
 		});
 	}
 };
