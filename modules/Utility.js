@@ -21,7 +21,7 @@ module.exports.commands = new Command({
 
 		const { categories } = message.client.commandHandler;
 		const mapped = categories.map((exported, category) => {
-			const cmds = Object.entries(exported).map((cmd) => cmd[0] + (cmd[1]?.aliases ? ", " + cmd[1]?.aliases?.join(", ") : ""));
+			const cmds = Object.entries(exported).map((cmd) => cmd[1]?.aliases.join(", "));
 			return `**${category}**\n\`${cmds.join("` `")}\``;
 		});
 
@@ -79,11 +79,9 @@ module.exports.showemoji = new Command({
 	aliases: ["emoji", "se"],
 	prefix: "//",
 	args: true,
-	clientPermissions: [Permissions.FLAGS.SEND_MESSAGES],
 	description: "Shows information and image link for an emoji.",
 	ownerOnly: false,
 	usage: "<emoji>",
-	userPermissions: [Permissions.FLAGS.SEND_MESSAGES],
 	async execute(message, args) {
 
 		let emoji = undefined;
@@ -125,15 +123,3 @@ module.exports.showemoji = new Command({
 // 		return first.edit(`Ping took: ${Date.now() - first.createdTimestamp}ms`);
 // 	},
 // });
-
-// Old Template
-// module.exports.new = {
-//  ownerOnly: false,
-//  description: "",
-//  usage: "",
-//  args: false,
-// 	aliases: ["cmds"],
-// 	async execute(message) {
-//
-// 	},
-// };
