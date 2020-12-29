@@ -19,15 +19,16 @@ module.exports.commands = new Command({
 	aliases: ["cmds"],
 	async execute(message) {
 
-		const { categories } = message.client.commandHandler;
-		const mapped = categories.map((exported, category) => {
-			const cmds = Object.entries(exported).map((cmd) => cmd[1]?.aliases.join(", "));
-			return `**${category}**\n\`${cmds.join("` `")}\``;
-		});
+		const { commands } = this.client.commandHandler;
+		const mapped = [... new Set(commands.map((exported) => exported.category))];
+
+		const dict = {};
+		mapped.map(cat => dict[cat] = []);
+		commands.map(element => dict[element.category].push(element.aliases.join(", ")));
 
 		return message.channel.send(new MessageEmbed({
 			title: "Commands",
-			description: mapped.join("\n"),
+			description: mapped.map(cat => `**${cat}**\n\`${dict[cat].join("` `")}\``).join("\n"),
 			color: message.member.displayColor,
 		}));
 	},
@@ -61,15 +62,14 @@ module.exports.help = new Command({
 
 		const data = [];
 
-		data.push(`**Name:** ${command.name}`);
-
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(", ")}`);
 		if (command.description) data.push(`**Description:** ${command.description}`);
 		if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
 
 		return message.channel.send(new MessageEmbed({
-			title: name,
+			title: command.name,
 			description: data.join("\n"),
+			footer: { text: `Category: ${command.category}` },
 			color: message.member.displayColor,
 		}));
 	},
