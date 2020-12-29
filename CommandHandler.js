@@ -51,7 +51,7 @@ module.exports = class CommandHandler {
 		});
 	}
 
-	handle(message) {
+	async handle(message) {
 
 		let prefix = PrefixSupplier(message);
 		const commands = this.commands;
@@ -87,7 +87,7 @@ module.exports = class CommandHandler {
 			return message.reply("I can't execute that command inside DMs!");
 		}
 
-		// // TODO: permissions check method.
+		// // TODO: permissions check method. //TODONE xd kms
 		if (command.userPermissions || command.clientPermissions) {
 
 			if (command.userPermissions) {
@@ -145,18 +145,18 @@ module.exports = class CommandHandler {
 
 		commandFiles.forEach(file => {
 			const exported = require(`./modules/${file}`);
-			this.categories.set(file.slice(0, file.indexOf(".")), exported);
 
 			Object.entries(exported).forEach(cmd => {
 
-				const cmdName = cmd[0];
-				const cmdObject = cmd[1];
+				const cmdName = cmd[0],
+					cmdObject = cmd[1];
 
 				if (!(cmdObject instanceof Command)) {
 					throw new Error(`Command is not instance of a Command class. | ${cmdName} | ${file}`);
 				}
 
 				cmdObject.client = this.client;
+				cmdObject.category = cmdObject.category ? cmdObject.category : file.slice(0, file.indexOf("."));
 				cmdObject.name = cmdName;
 				!cmdObject.aliases.length > 0 ? cmdObject.aliases = [cmdName] : cmdObject.aliases.push(cmdName);
 
