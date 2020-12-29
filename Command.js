@@ -1,13 +1,14 @@
 // eslint-disable-next-line no-unused-vars
-const { Client, BitField, PermissionString } = require("discord.js");
+const { BitField, PermissionString } = require("discord.js");
 
 module.exports = class Command {
 	constructor({
 		aliases = [],
 		args = false,
+		category = null,
 		client,
 		clientPermissions = null,
-		description = "Empty description",
+		description = "No description provided.",
 		execute,
 		guildOnly = false,
 		ownerOnly = false,
@@ -28,6 +29,11 @@ module.exports = class Command {
 		 * @type {boolean}
 		 */
 		this.args = Boolean(args);
+		/**
+		 * @type {string}
+		 * Is set automatically unless specified.
+		 */
+		this.category = category;
 		/**
 		 * @type {Client}
 		 */
