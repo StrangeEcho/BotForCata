@@ -7,7 +7,7 @@ const Command = require("../Command");
 module.exports.say = new Command({
 	description: "Repeats message.",
 	args: true,
-	ownerOnly: true,
+	userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
 	execute(message, args) {
 		const sayMessage = args.join(" ");
 		message.delete().catch(err => console.log(err));
