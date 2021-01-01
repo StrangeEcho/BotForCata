@@ -47,8 +47,18 @@ module.exports.smart = new Command({
 });
 
 module.exports.megumin = new Command({
+	typing: true,
 	execute(message) {
 		fetch("https://waifu.pics/api/sfw/megumin")
+			.then(result => result.json())
+			.then((data) => message.channel.send(data["url"] ?? "Nothing."));
+	},
+});
+
+module.exports.shinobu = new Command({
+	typing: true,
+	execute(message) {
+		fetch("https://waifu.pics/api/sfw/shinobu")
 			.then(result => result.json())
 			.then((data) => message.channel.send(data["url"] ?? "Nothing."));
 	},
