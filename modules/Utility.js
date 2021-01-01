@@ -20,15 +20,19 @@ module.exports.commands = new Command({
 	async execute(message) {
 
 		const { commands } = this.client.commandHandler;
-		const mapped = [... new Set(commands.map((exported) => exported.category))];
+		const mappedCategories = [... new Set(commands.map((exported) => exported.category))];
 
-		const dict = {};
-		mapped.map(cat => dict[cat] = []);
-		commands.map(element => dict[element.category].push(element.aliases.join(", ")));
+		// Dict containing category, to guide where commands get added
+		const dictionary = {};
+		// Adds the categories and sets their value to an array
+		mappedCategories.map(cat => dictionary[cat] = []);
+		// using the dict to guide commands, and push the command's name to that category.
+		commands.map(command => dictionary[command.category].push(command.name));
 
 		return message.channel.send(new MessageEmbed({
 			title: "Commands",
-			description: mapped.map(cat => `**${cat}**\n\`${dict[cat].join("` `")}\``).join("\n"),
+			// formats the output, using category, dictionary and then joining each with newline
+			description: mappedCategories.map(category => `**${category}**\n\`${dictionary[category].join("` `")}\``).join("\n"),
 			color: message.member.displayColor,
 		}));
 	},
