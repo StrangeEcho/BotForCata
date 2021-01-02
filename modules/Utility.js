@@ -123,7 +123,7 @@ module.exports.showemoji = new Command({
 // 	usage: "<arg here if args>",
 // 	userPermissions: [Permissions.FLAGS.SEND_MESSAGES],
 // 	async execute(message) {
-// 		const first = await message.channel.send("PINGIIIIIIIIIIIIIIIIIIIIIIIIIIIING");
-// 		return first.edit(`Ping took: ${Date.now() - first.createdTimestamp}ms`);
+// 		const { send } = message.channel;
+// 		send("");
 // 	},
 // });

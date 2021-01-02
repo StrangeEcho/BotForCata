@@ -48,19 +48,26 @@ module.exports.smart = new Command({
 
 module.exports.megumin = new Command({
 	typing: true,
-	execute(message) {
-		fetch("https://waifu.pics/api/sfw/megumin")
-			.then(result => result.json())
-			.then((data) => message.channel.send(data["url"] ?? "Nothing."));
+	async execute(message) {
+		message.channel.send(new Discord.MessageEmbed({
+			color: "#FF0000",
+			image: { url: await fetch("https://waifu.pics/api/sfw/megumin")
+				.then(result => result.json())
+				.then((data) => (data["url"])),
+			},
+		}));
 	},
 });
 
 module.exports.shinobu = new Command({
 	typing: true,
-	execute(message) {
-		fetch("https://waifu.pics/api/sfw/shinobu")
-			.then(result => result.json())
-			.then((data) => message.channel.send(data["url"] ?? "Nothing."));
+	async execute(message) {
+		message.channel.send(new Discord.MessageEmbed({
+			color: "#FFFF00",
+			image: { url: await fetch("https://waifu.pics/api/sfw/shinobu")
+				.then(result => result.json())
+				.then((data) => (data["url"])),
+			},
+		}));
 	},
 });
-
