@@ -49,13 +49,24 @@ module.exports.smart = new Command({
 module.exports.megumin = new Command({
 	typing: true,
 	async execute(message) {
-		message.channel.send(new Discord.MessageEmbed({
-			color: "#FF0000",
-			image: { url: await fetch("https://waifu.pics/api/sfw/megumin")
-				.then(result => result.json())
-				.then((data) => (data["url"])),
-			},
-		}));
+		message.channel.send(new Discord.MessageEmbed({ color: "#FF0000", image: { url: await fetch("https://waifu.pics/api/sfw/megumin").then(result => result.json()).then((data) => (data["url"])) } }));
+	},
+});
+
+module.exports.neko = new Command({
+	typing: true,
+	async execute(message) {
+		message.channel.send(new Discord.MessageEmbed({ color: "#FF0000", image: { url: await fetch("https://waifu.pics/api/sfw/neko").then(result => result.json()).then((data) => (data["url"])) } }));
+	},
+});
+
+module.exports.cuddle = new Command({
+	typing: true,
+	async execute(message, args) {
+
+		const user = getUserFromMention(args.join(""), message);
+
+		message.channel.send(user ? `${message.author.username} cuddled ${user.username}, owo.` : null, new Discord.MessageEmbed({ color: "#FF0000", image: { url: await fetch("https://waifu.pics/api/sfw/cuddle").then(result => result.json()).then((data) => (data["url"])) } }));
 	},
 });
 
